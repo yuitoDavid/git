@@ -1,0 +1,19 @@
+{
+  "left_leg": [
+    0,
+    1
+  ],
+  "right_leg": [
+    2,
+    3
+  ],
+  "torso": [
+    4
+  ],
+  "left_arm": [
+    5
+  ],
+  "right_arm": [
+    6
+  ]
+}

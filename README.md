@@ -85,7 +85,8 @@ python scripts/complete_motion.py demo
 
 | 日期 | 维护者 | 改动 | 来源与验证记录 |
 |---|---|---|---|
-| 2026-07-28 | yuitohaidon | 创建仓库 | 保留原 README 的创建日期 |
-| 2026-11-18 | Codex | 收录 πⁿMPC 与身体分组动作补全两个资料包 | [提交 1e5b920](https://github.com/yuitoDavid/git/commit/1e5b920)，验证状态见各工具说明 |
-| 2026-11-18 | Codex | 补充根目录工具说明、来源和验证状态，新增 AGENTS.md 维护约定，并同步仓库最新地址 | 检查仓库内链接目标与文档差异，沿用已有代码验证结果；当前远程为 yuitoDavid/git |
+| 2026-07-28 | yuitoDavid | 创建仓库 | 保留原 README 的创建日期 |
+| 2026-11-18 | yuitoDavid+dsh+codex | 收录 πⁿMPC 与身体分组动作补全两个资料包 | [提交 1e5b920](https://github.com/yuitoDavid/git/commit/1e5b920)，验证状态见各工具说明 |
+| 2026-11-18 | yuitoDavid+dsh+codex | 补充根目录工具说明、来源和验证状态，新增 AGENTS.md 维护约定，并同步仓库最新地址 | 检查仓库内链接目标与文档差异，沿用已有代码验证结果；当前远程为 yuitoDavid/git |
 | 2026-11-18 | Codex | Added an English introduction with the university, major, and year of enrollment | Owner-provided details. README diff and local links checked. |
+| 2026-11-18 | yuitoDavid+dsh+codex | 根据仓库所有者要求修正截图中三条记录的维护者 | 创建记录为 yuitoDavid，两条工具资料记录为 yuitoDavid+dsh+codex。已核对文档差异。 |

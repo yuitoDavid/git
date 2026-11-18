@@ -26,6 +26,8 @@ The public kernels share one state-transition matrix A per solve. The input matr
 
 Possible applications include speed tracking for a wheeled base, joint tracking for a locally linearized arm, and training references for legged robots with a prescribed contact schedule. For each task, supply the dynamics, costs, bounds, and reference trajectories. The usage guide sketches how to integrate the solver into Walk the PLANC.
 
+**Limitations.** The current solver assumes a shared, fixed A within each batch. Coupled constraints and nonlinear dynamics need a different formulation or solver. Check dynamics and constraint violations on the returned trajectory before using it in a control loop. [Solver limitations](pi-n-mpc/USAGE.en.md#limitations)
+
 ### Code and sources
 
 - [vendor/pimpc.py](pi-n-mpc/vendor/pimpc.py) is the authors' PyTorch implementation, and [vendor/jax_pimpc.py](pi-n-mpc/vendor/jax_pimpc.py) is their JAX implementation. Both were extracted from commit 97e37648d19b635f9b233c7146c28e68a8d672eb. The original [MIT license](pi-n-mpc/vendor/LICENSE) is included. [Pinned upstream source](https://github.com/junhengl/mpc-rl/tree/97e37648d19b635f9b233c7146c28e68a8d672eb/src/themis_mpc)
@@ -54,6 +56,8 @@ Fit a model on complete trajectories, then reconstruct one missing joint group f
 Input uses .npz files. The motion array has shape “clips × frames × joints.” Build the groups from the target robot's joint order, and keep units, sampling rate, and coordinate conventions consistent. Split training and validation by trajectory or terrain instance.
 
 The current NumPy ridge-regression implementation fills one body group at a time. By default it uses the current frame and two past frames. Simulation evaluation should also check joint limits, motion smoothness, foot-placement accuracy, and disturbance recovery.
+
+**Limitations.** The model reconstructs one group across a clip using a linear fit to the visible joints. Motion that depends on contact, commands, or other inputs absent from the clip can be ambiguous. Check physical feasibility separately. [Completion limitations](body-part-motion-completion/USAGE.en.md#limitations)
 
 ### Code and sources
 
@@ -111,6 +115,8 @@ I am a student at Shanghai University majoring in Electronic Information Enginee
 
 可用于轮式底盘速度跟踪、局部线性化的机械臂关节跟踪，也可为接触时序已知的腿式机器人生成训练参考。接入时按任务提供动力学、代价、约束和参考轨迹。使用说明中以 Walk the PLANC 为例演示接入。
 
+**局限。** 当前求解器要求同一批次共享固定 A，耦合约束和非线性动力学需要改建模或求解器。闭环使用前要检查返回轨迹的动力学残差和约束违例。[求解器局限](pi-n-mpc/使用说明.md#局限)
+
 ### 源码与来源
 
 - [vendor/pimpc.py](pi-n-mpc/vendor/pimpc.py) 为作者的 PyTorch 实现，[vendor/jax_pimpc.py](pi-n-mpc/vendor/jax_pimpc.py) 为 JAX 实现。提取自固定提交 97e37648d19b635f9b233c7146c28e68a8d672eb，保留 [MIT 许可证](pi-n-mpc/vendor/LICENSE)。[上游固定版本](https://github.com/junhengl/mpc-rl/tree/97e37648d19b635f9b233c7146c28e68a8d672eb/src/themis_mpc)
@@ -139,6 +145,8 @@ JAX 路径安装 requirements-jax-cpu.txt，运行时选择 --backend jax。CUDA
 数据采用 .npz 格式，motion 的维度为“片段数 × 帧数 × 关节数”。需要按目标机器人的真实关节顺序建立分组，并统一单位、采样率和坐标定义。训练与验证按轨迹或地形实例划分。
 
 当前实现一次补全一个身体组，使用 NumPy 与岭回归，默认读取当前帧和过去两帧。仿真评估还需检查关节限位、动作平滑、落脚精度和抗扰表现。
+
+**局限。** 模型用可见关节做线性拟合，一次补全整段中的一组。如果缺失动作取决于片段中没有记录的接触或指令，仅凭可见关节可能无法推断。输出的物理可行性需另行检查。[动作补全局限](body-part-motion-completion/使用说明.md#局限)
 
 ### 源码与来源
 

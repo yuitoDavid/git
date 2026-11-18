@@ -20,6 +20,12 @@ Humanoid-VLA Section 3.2 divides motion into the left leg, right leg, torso, lef
 - The model fills one group at a time and excludes that group's original values throughout each clip. Visible groups must contain valid values. At inference, the missing group can contain placeholders or NaN. Completion preserves visible groups. Simultaneously missing groups, joint mappings across robots, and quaternion poses need additional adaptation.
 - By default the model uses the current frame and two past frames. Offline reconstruction can add future frames with --future. Causal windows repeat the first frame at the start of a clip. Outputs are kinematic references, so physical feasibility and control gains need simulation tests.
 
+## Limitations
+
+- Each completion call excludes the target group's values across the entire clip. This implementation fits reference clips with a missing group. A different mask and model are needed to use intermittent observations of the target group, handle per-joint dropouts, or complete multiple groups at once.
+- The separate linear models only read a temporal window of the visible joints. Similar visible motions can correspond to different missing motions when commands, contacts, or loads differ. A linear fit may average those motions. Reassess performance on a different robot, gait, or task.
+- The output is an estimate of the joint angles. Before using it in control, check joint limits, velocity, continuity, and any relevant collision or contact constraints. Evaluate reconstruction error and task performance separately.
+
 ## Quick start
 
 Run from this directory with Python 3.11 or 3.12. NumPy is the only dependency. Training and evaluation can run on CPU.

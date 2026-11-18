@@ -18,6 +18,12 @@ You can use this prompt.
 - The solves are independent across the batch. GPU launch overhead, synchronization, copies, and memory contention can affect even large batches with short horizons. JAX compilation reuse depends on tensor shapes.
 - Training-reference use does not require backpropagation through the solver. Differentiable MPC, online hardware safety control, or mixed-size batches need additional numerical requirements and validation.
 
+## Limitations
+
+- A fixed linearization is reliable near its operating point. Measure model error when the reference covers a wider range of states or configurations. Varying A within a horizon, or adding coupled constraints such as friction cones and obstacle avoidance, requires a different formulation or solver.
+- The PyTorch interface accepts dumin and dumax, while the current projection enforces componentwise bounds on states and inputs. Wdu penalizes control increments. Hard increment bounds need a separate implementation. JAX uses fixed large internal state bounds, so task-specific state limits need separate handling.
+- The solver returns the result of a finite number of iterations. JAX reports a batch residual, and PyTorch also checks convergence across the batch. PyTorch's obj_val field contains the iteration residual. Check input limits, state bounds, and dynamics residuals on each returned trajectory as required by the task. Define how the controller responds when a solve fails.
+
 ## Running locally
 
 Use a separate Python 3.11 or 3.12 environment. Install the backend you need. The framework versions in the two requirements files come from the authors' repository. Choose GPU packages that match the CUDA version, driver, and platform.

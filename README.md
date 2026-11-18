@@ -1,8 +1,6 @@
 # 机器人训练工具库
 
-整理人形机器人训练中可迁移的算法源码、运行示例与接入说明。每个子文件夹是一个独立资料包，可交给新的 GPT、Gemini 或本地编程智能体继续使用。
-
-后续智能体开始改动前，请先阅读 [AGENTS.md](AGENTS.md)。新增工具、修改接口或补充实测结果时，同步维护本页工具目录和末尾的变更记录。
+整理人形机器人训练中可迁移的算法源码、运行示例与接入说明。各工具按用途放在独立子文件夹中。
 
 ## About Me
 
@@ -73,14 +71,6 @@ python scripts/complete_motion.py demo
 
 2026-11-17 已用合成数据跑通训练、保存、加载、带 NaN 占位的补全，以及独立片段上的误差评估。还检查了可见组数据保持一致、待补组占位值不影响预测。G1 与 PLANC 的机器人数据评估待完成。
 
-## 交给下一位智能体
-
-可将仓库链接连同下面的文字发送给新账号中的智能体。
-
-> 请先阅读仓库根目录的 AGENTS.md、README.md，以及相关工具目录中的 SKILL.md 和使用说明。根据我的目标项目判断适用条件，复用对应源码。完成新增或修改后，同步更新 README 的用途、来源和验证情况，并在变更记录中写入本次工作。请分别说明已经运行的验证与仍待验证的结果。
-
-普通网页对话可上传相关资料包。能够访问工作区的编程智能体可克隆仓库后直接读取这些文件。
-
 ## 变更记录
 
 | 日期 | 维护者 | 改动 | 来源与验证记录 |
@@ -90,3 +80,4 @@ python scripts/complete_motion.py demo
 | 2026-11-18 | yuitoDavid+dsh+codex | 补充根目录工具说明、来源和验证状态，新增 AGENTS.md 维护约定，并同步仓库最新地址 | 检查仓库内链接目标与文档差异，沿用已有代码验证结果；当前远程为 yuitoDavid/git |
 | 2026-11-18 | Codex | Added an English introduction with the university, major, and year of enrollment | Owner-provided details. README diff and local links checked. |
 | 2026-11-18 | yuitoDavid+dsh+codex | 根据仓库所有者要求修正截图中三条记录的维护者 | 创建记录为 yuitoDavid，两条工具资料记录为 yuitoDavid+dsh+codex。已核对文档差异。 |
+| 2026-11-18 | yuitoDavid+dsh+codex | 整理首页介绍与文档结构 | 调整协作说明的位置，检查页面内链接。 |

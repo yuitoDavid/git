@@ -22,7 +22,7 @@ README 的“工具目录”和“技术变更记录”是项目索引。新增�
 
 - pi-n-mpc 的公开内核共享 A，B 可按环境和预测步变化，现成约束以逐维上下界为主。vendor 文件对应上游固定提交，修改 vendor 时同时记录修改内容和版本依据。新的机器人模型、坐标转换和接触定义放在任务适配代码中。
 - body-part-motion-completion 使用独立编写的 NumPy 时序岭回归，一次补全一组连续关节角。按目标机器人实际关节名建立分组，按轨迹或地形拆训练与验证数据。实时输入采用因果窗口时，将 future 设为 0。
-- PLANC 原版通过解析模型和样条生成训练参考。加入 MPC 或学习的摆臂参考时，需要相应的原版对照与任务指标。
+- 按目标任务的动态模型、约束、关节分组和可用观测判断是否可接入。文档先写通用接口和验证方法，再给具体平台的示例。以目标任务原有方案为对照，报告与该任务相关的指标。
 
 ## 提交前
 
@@ -62,7 +62,7 @@ The README tool index and technical history are the project index. When adding a
 
 - The public pi-n-mpc kernels share A. B can vary by environment and prediction step, and the supplied projections mainly support componentwise bounds. The vendor files correspond to a pinned upstream commit. Record changes to those files and their version basis. Keep robot models, coordinate conversions, and contact definitions in task adapters.
 - body-part-motion-completion is an independently written NumPy temporal ridge-regression implementation that fills one group of continuous joint angles. Build groups from the target robot's actual joint names and split training and validation by trajectory or terrain. Set future to 0 when using causal windows online.
-- PLANC generates its original training references through analytical models and splines. Experiments with MPC or learned arm references need the original baseline and task metrics.
+- Assess compatibility using the target task's dynamics, constraints, joint groups, and available observations. Document the general interface and validation steps before platform examples. Compare against the target task's existing method and report metrics relevant to that task.
 
 ## Before committing
 

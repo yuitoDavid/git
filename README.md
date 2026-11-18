@@ -3,7 +3,7 @@
 <details name="readme-language">
 <summary><strong>English</strong></summary>
 
-A collection of reusable code, runnable examples, and integration notes for humanoid robot training. Each tool has its own directory.
+Reusable tools for robot control and training. Each tool has its own directory with source code, examples, and integration notes.
 
 ## About the author
 
@@ -24,7 +24,7 @@ The solver suits repeated linear-affine MPC problems with quadratic costs inside
 
 The public kernels share one state-transition matrix A per solve. The input matrix B may vary by environment and prediction step. The existing projections mainly enforce componentwise bounds. Time-varying A, coupled friction constraints, nonlinear dynamics, and discrete foothold selection require additional modeling or solver changes.
 
-For Walk the PLANC, one experiment is to replace the training-time CoM spline reference with MPC predictions. The original method uses analytical step timing and splines. Evaluate reference quality, stepping performance, and the extra computation.
+Possible applications include speed tracking for a wheeled base, joint tracking for a locally linearized arm, and training references for legged robots with a prescribed contact schedule. For each task, supply the dynamics, costs, bounds, and reference trajectories. The usage guide sketches how to integrate the solver into Walk the PLANC.
 
 ### Code and sources
 
@@ -49,7 +49,7 @@ On November 17, 2026, the extracted code was checked against the pinned upstream
 
 ### Purpose and requirements
 
-Given complete robot trajectories, hide one body group, such as a leg, the torso, or an arm, and predict it from the remaining groups and a temporal window. This can support reference-data completion or experiments with training-time arm references in PLANC.
+Fit a model on complete trajectories, then reconstruct one missing joint group from the remaining groups and their recent motion. The group definitions come from the data. They can describe body parts on a humanoid or sets of joints on a manipulator. The method can fill gaps in reference trajectories or provide training targets when the visible joints carry enough information about the missing group.
 
 Input uses .npz files. The motion array has shape “clips × frames × joints.” Build the groups from the target robot's joint order, and keep units, sampling rate, and coordinate conventions consistent. Split training and validation by trajectory or terrain instance.
 
@@ -59,7 +59,7 @@ The current NumPy ridge-regression implementation fills one body group at a time
 
 - The idea comes from *Humanoid-VLA: Towards Universal Humanoid Control with Visual Integration*, Pengxiang Ding et al., 2025. Section 3.2 describes the five-part motion representation and masked completion tasks. [Paper](https://arxiv.org/html/2502.14795v1#S3.SS2)
 - [scripts/body_mask.py](body-part-motion-completion/scripts/body_mask.py) and [scripts/complete_motion.py](body-part-motion-completion/scripts/complete_motion.py) were written independently for this toolkit as a continuous joint-angle baseline. The paper and author pages checked during packaging on November 17, 2026 did not provide the corresponding training code. This implementation uses temporal ridge regression. The paper's VQ codebooks and language model would require separate work.
-- The PLANC integration notes follow its CoM, swing-foot, and phase-synchronized arm references in Section III. [PLANC paper](https://arxiv.org/html/2601.06286v1#S3)
+- Walk the PLANC is one example of using completed arm references in a training reward. Its CoM, swing-foot, and phase-synchronized arm references are described in Section III. [PLANC paper](https://arxiv.org/html/2601.06286v1#S3)
 
 ### Running and validation
 
@@ -72,7 +72,7 @@ python scripts/complete_motion.py demo
 
 The usage guide covers real trajectory data, joint-group files, and the train and complete commands.
 
-Synthetic-data checks on November 17, 2026 covered training, saving, loading, NaN placeholders, and held-out clip error. They also checked that visible groups stay intact and placeholder values in the missing group do not affect predictions. Evaluation on G1 or PLANC robot data is still pending.
+Synthetic-data checks on November 17, 2026 covered training, saving, loading, NaN placeholders, and held-out clip error. They also checked that visible groups stay intact and placeholder values in the missing group do not affect predictions. Evaluation on real robot trajectories and downstream control tasks is still pending.
 
 ## Technical history
 
@@ -88,7 +88,7 @@ This history records changes to tool functionality, algorithms, interfaces, depe
 <details open name="readme-language">
 <summary><strong>简体中文</strong></summary>
 
-整理人形机器人训练中可迁移的算法源码、运行示例与接入说明。各工具按用途放在独立子文件夹中。
+收录可用于机器人控制与训练的工具。每个工具都有独立目录，包含源码、运行示例和接入说明。
 
 ## About Me
 
@@ -109,7 +109,7 @@ I am a student at Shanghai University majoring in Electronic Information Enginee
 
 公开内核要求单次求解共享状态转移矩阵 A，输入矩阵 B 可以随环境和预测步变化。现有约束以逐维上下界投影为主。目标任务中的时变 A、耦合摩擦约束、非线性动力学和离散落脚选择需要进一步建模或扩展。
 
-在 Walk the PLANC 中，可研究用 MPC 预测替换训练期质心样条参考。原版采用解析步时与样条，新增 MPC 的实验应比较参考质量、踏石表现和额外计算开销。
+可用于轮式底盘速度跟踪、局部线性化的机械臂关节跟踪，也可为接触时序已知的腿式机器人生成训练参考。接入时按任务提供动力学、代价、约束和参考轨迹。使用说明中以 Walk the PLANC 为例演示接入。
 
 ### 源码与来源
 
@@ -134,7 +134,7 @@ JAX 路径安装 requirements-jax-cpu.txt，运行时选择 --backend jax。CUDA
 
 ### 用途与适用条件
 
-输入完整机器人轨迹，训练时遮挡左腿、右腿、躯干、左臂或右臂中的一组，用其他组和时间窗口预测缺失组。可先用于补全参考数据，或在 PLANC 中研究训练期的手臂参考。
+用完整轨迹训练，再根据其他组的关节运动补全缺失的一组。分组由数据决定，可以按人形机器人的身体部位划分，也可以按机械臂的关节划分。当可见关节的运动对缺失组有预测价值时，可用于补全参考轨迹或生成训练目标。
 
 数据采用 .npz 格式，motion 的维度为“片段数 × 帧数 × 关节数”。需要按目标机器人的真实关节顺序建立分组，并统一单位、采样率和坐标定义。训练与验证按轨迹或地形实例划分。
 
@@ -144,7 +144,7 @@ JAX 路径安装 requirements-jax-cpu.txt，运行时选择 --backend jax。CUDA
 
 - 思路来自 *Humanoid-VLA: Towards Universal Humanoid Control with Visual Integration*，Pengxiang Ding 等，2025。§3.2 描述五个身体部位的动作表示和遮挡补全任务。[论文全文](https://arxiv.org/html/2502.14795v1#S3.SS2)
 - [scripts/body_mask.py](body-part-motion-completion/scripts/body_mask.py) 与 [scripts/complete_motion.py](body-part-motion-completion/scripts/complete_motion.py) 是本库独立编写的连续关节角基线。2026-11-17 整理时，所检查的论文和作者页面未定位到对应训练源码。本实现的模型范围为时序岭回归，原论文的 VQ 码本与语言模型可另行研究。
-- PLANC 的接入讨论依据其质心、摆动脚和相位同步摆臂参考，见 §III。[PLANC 论文](https://arxiv.org/html/2601.06286v1#S3)
+- Walk the PLANC 是将补全的手臂参考用于训练奖励的一个示例。其质心、摆动脚和相位同步摆臂参考见 §III。[PLANC 论文](https://arxiv.org/html/2601.06286v1#S3)
 
 ### 运行与验证情况
 
@@ -157,7 +157,7 @@ python scripts/complete_motion.py demo
 
 真实数据训练、关节分组文件以及 train、complete 命令见该目录的使用说明。
 
-2026-11-17 已用合成数据跑通训练、保存、加载、带 NaN 占位的补全，以及独立片段上的误差评估。还检查了可见组数据保持一致、待补组占位值不影响预测。G1 与 PLANC 的机器人数据评估待完成。
+2026-11-17 已用合成数据跑通训练、保存、加载、带 NaN 占位的补全，以及独立片段上的误差评估。还检查了可见组数据保持一致、待补组占位值不影响预测。真实机器人轨迹与下游控制任务的评估待完成。
 
 ## 技术变更记录
 

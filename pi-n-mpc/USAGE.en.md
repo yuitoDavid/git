@@ -49,9 +49,20 @@ E is the number of environments, N the prediction horizon, and nx and nu the sta
 
 For PyTorch, call Model.setup() and Model.solve_batch() from vendor/pimpc.py. For JAX, use PiMPCSolver(B, N, nx, nu) and solve(prob) from vendor/jax_pimpc.py. Follow the example's parameter mapping and keep persistent tensors on the training device. Put robot-specific joint ordering and contact geometry in the task adapter.
 
-## Evaluation and PLANC integration
+## Integrating and evaluating a new task
+
+1. Define the state, control input, and reference trajectory. Fix the sampling interval and write the discrete dynamics. Start with a small batch to check indexing and units for the state, control, and previous control input.
+2. Map costs and constraints to the tensor interface. Check whether componentwise bounds express the required limits. Problems in the same batch share A, while B may vary by environment and prediction step.
+3. Choose how to use the output. In a closed loop, pass the first control input to the controller and replan from the next observation. In training, use some or all of the predicted trajectory in rewards, the critic, or distillation.
 
 When replacing an existing MPC solver, use the same batch of real inputs. Match objectives, feasibility, and constraints before comparing warm batch time, peak VRAM, throughput, and tail latency. Check residuals and constraint violations per environment. The JAX batch residual alone cannot establish feasibility for every environment. Include dynamics construction, cross-framework tensor conversion, solves, and reward updates when timing the full training loop.
+
+## Example tasks
+
+- Wheeled-base speed tracking. Use speed as the state and acceleration as the input. Track a speed command at a fixed sampling interval and apply componentwise acceleration bounds.
+- Robot-arm joint tracking. Linearize around an operating point with joint positions and velocities as the state. Select the control input to match the actual interface. Check input limits and model error over the intended motion range.
+
+### Walk the PLANC
 
 PLANC uses LIP-based analytical step timing, CoM splines, and CLF rewards. Adding MPC therefore changes how its training reference is generated. To study reference quality, start with the original next stone, foothold pose, and step duration, then add centroidal MPC under a prescribed contact schedule. Use its CoM prediction as the CLF reference. Compare foot-placement error, disturbed traversal success, and wall-clock training time against the original splines. Discrete stone selection and joint optimization of contact timing require extensions beyond the current kernel. [PLANC Section III](https://arxiv.org/html/2601.06286v1#S3)
 
